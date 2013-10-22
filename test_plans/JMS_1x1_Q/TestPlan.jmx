@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.4" jmeter="2.9 r1437961">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="JMS Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="brokerUrl" elementType="Argument">
+            <stringProp name="Argument.name">brokerUrl</stringProp>
+            <stringProp name="Argument.value">tcp://192.168.49.2:61616</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="destination" elementType="Argument">
+            <stringProp name="Argument.name">destination</stringProp>
+            <stringProp name="Argument.value">queue.TEST.JMS</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="numberOfBatches" elementType="Argument">
+            <stringProp name="Argument.name">numberOfBatches</stringProp>
+            <stringProp name="Argument.value">250</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="numberOfMessagesPerBatch" elementType="Argument">
+            <stringProp name="Argument.name">numberOfMessagesPerBatch</stringProp>
+            <stringProp name="Argument.value">1000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="durable" elementType="Argument">
+            <stringProp name="Argument.name">durable</stringProp>
+            <stringProp name="Argument.value">false</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="persistent" elementType="Argument">
+            <stringProp name="Argument.name">persistent</stringProp>
+            <stringProp name="Argument.value">true</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Producer / Consumer Ratio" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="numberOfProducers" elementType="Argument">
+            <stringProp name="Argument.name">numberOfProducers</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="numberOfConsumers" elementType="Argument">
+            <stringProp name="Argument.name">numberOfConsumers</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="JMS Consumer 1" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">${__BeanShell(${numberOfBatches}/${numberOfConsumers})}</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1381103021000</longProp>
+        <longProp name="ThreadGroup.end_time">1381103021000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <JavaSampler guiclass="JavaTestSamplerGui" testclass="JavaSampler" testname="JMS Consumer" enabled="true">
+          <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="HOST" elementType="Argument">
+                <stringProp name="Argument.name">HOST</stringProp>
+                <stringProp name="Argument.value">${brokerUrl}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="CLIENT_ID" elementType="Argument">
+                <stringProp name="Argument.name">CLIENT_ID</stringProp>
+                <stringProp name="Argument.value">C1-${__time(YMDHMS)}${__threadNum}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="DESTINATION" elementType="Argument">
+                <stringProp name="Argument.name">DESTINATION</stringProp>
+                <stringProp name="Argument.value">${destination}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="AGGREGATE" elementType="Argument">
+                <stringProp name="Argument.name">AGGREGATE</stringProp>
+                <stringProp name="Argument.value">${numberOfMessagesPerBatch}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="DURABLE" elementType="Argument">
+                <stringProp name="Argument.name">DURABLE</stringProp>
+                <stringProp name="Argument.value">${durable}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="classname">com.mycompany.jmeter.protocol.jms.sampler.JmsConsumer</stringProp>
+        </JavaSampler>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="JMS Producer 1" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">${__BeanShell(${numberOfBatches}/${numberOfProducers})}</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1381103021000</longProp>
+        <longProp name="ThreadGroup.end_time">1381103021000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <JavaSampler guiclass="JavaTestSamplerGui" testclass="JavaSampler" testname="JMS Producer" enabled="true">
+          <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="HOST" elementType="Argument">
+                <stringProp name="Argument.name">HOST</stringProp>
+                <stringProp name="Argument.value">${brokerUrl}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="CLIENT_ID" elementType="Argument">
+                <stringProp name="Argument.name">CLIENT_ID</stringProp>
+                <stringProp name="Argument.value">P1-${__time(YMDHMS)}${__threadNum}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="DESTINATION" elementType="Argument">
+                <stringProp name="Argument.name">DESTINATION</stringProp>
+                <stringProp name="Argument.value">${destination}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="AGGREGATE" elementType="Argument">
+                <stringProp name="Argument.name">AGGREGATE</stringProp>
+                <stringProp name="Argument.value">${numberOfMessagesPerBatch}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="PERSISTENT" elementType="Argument">
+                <stringProp name="Argument.name">PERSISTENT</stringProp>
+                <stringProp name="Argument.value">${persistent}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="classname">com.mycompany.jmeter.protocol.jms.sampler.JmsProducer</stringProp>
+        </JavaSampler>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
